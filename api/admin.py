@@ -2,10 +2,6 @@ from django.contrib import admin, messages
 from django.contrib.auth.models import Group, User
 from .models import *
 
-@admin.register(TgUser)
-class TgUserAdmin(admin.ModelAdmin):
-    pass
-
 @admin.register(Course)
 class CourseAdmin(admin.ModelAdmin):
     pass

@@ -1,16 +1,5 @@
 from django.db import models
 
-class TgUser(models.Model):
-    tg_id = models.IntegerField(blank=False, null=False, verbose_name='Telegram Id')
-    first_name = models.CharField(blank=True, null=True, max_length=256, verbose_name='Имя')
-    last_name = models.CharField(blank=True, null=True, max_length=256, verbose_name='Фамилия')
-
-    class Meta():
-        verbose_name_plural = 'Пользователи'
-        verbose_name = 'Пользователь'
-
-    def __str__(self) -> str:
-        return f"{self.first_name} {self.last_name}"
 
 class Question(models.Model):
     text = models.CharField(blank=False, null=False, max_length=256, verbose_name='Вопрос')
@@ -45,18 +34,24 @@ class Answer(models.Model):
         return self.text[:50] + '...'
     
 class Data(models.Model):
-    user = models.ForeignKey(TgUser, on_delete=models.CASCADE, verbose_name='Пользователь')
+    class ObjectChoices(models.IntegerChoices):
+        WEBINAR = (0, 'Вэбинар')
+        PROGRAM = (1, 'Программа')
+        TEACHER = (2, 'Преподаватель')
+
+    timestamp = models.DateTimeField(auto_now_add=True, verbose_name="Дата создания")
     course = models.ForeignKey(Course, on_delete=models.CASCADE, verbose_name='Курс')
     answers = models.ManyToManyField(Answer, verbose_name='Ответы')
-    is_relevant = models.IntegerField(blank=True, null=True, verbose_name='is_relevant')
-    object = models.IntegerField(blank=True, null=True, verbose_name='object')
-    is_positive = models.IntegerField(blank=True, null=True, verbose_name='is_positive')
+
+    is_relevant = models.IntegerField(blank=True, null=True, verbose_name='Отзыв релевантный?')
+    object = models.IntegerField(choices=ObjectChoices.choices, blank=True, null=True, verbose_name='К чему относятся?')
+    is_positive = models.IntegerField(blank=True, null=True, verbose_name='Отзыв положительный?')
 
     class Meta():
         verbose_name_plural = 'Наборы для нейросети'
         verbose_name = 'Набор для нейросети'
 
     def __str__(self) -> str:
-        return f"{self.user} - {self.course}"
+        return f"{self.pk} - {self.course}"
     
         

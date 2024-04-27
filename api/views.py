@@ -28,8 +28,3 @@ class CoursesView(generics.ListAPIView):
     queryset = Course.objects.all()
     serializer_class = CourseSerializer
 
-class TgUsersView(generics.ListCreateAPIView):
-    queryset = TgUser.objects.all()
-    serializer_class = TgUserSerializer
-
-

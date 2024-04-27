@@ -4,10 +4,6 @@ from rest_framework import serializers
 from .utils import nn
 from .models import *
 
-class TgUserSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = TgUser
-        fields = ('tg_id', 'first_name', 'last_name')
 
 class CourseSerializer(serializers.ModelSerializer):
     class Meta:
@@ -31,7 +27,7 @@ class AnswerSerializer(CreateAnswerSerializer):
 class CreateDataSerializer(serializers.ModelSerializer):
     class Meta:
         model = Data
-        fields = ('id', 'user', 'course', 'answers', 'is_relevant', 'object', 'is_positive')
+        fields = ('id', 'timestamp', 'course', 'answers', 'is_relevant', 'object', 'is_positive')
 
     def create(self, validated_data):
         answers = validated_data.pop('answers')
