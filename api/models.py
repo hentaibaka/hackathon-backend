@@ -1,6 +1,5 @@
 from django.db import models
 
-
 class TgUser(models.Model):
     tg_id = models.IntegerField(blank=False, null=False, verbose_name='Telegram Id')
     first_name = models.CharField(blank=True, null=True, max_length=256, verbose_name='Имя')
@@ -35,13 +34,8 @@ class Course(models.Model):
         return self.name
 
 class Answer(models.Model):
-    user = models.ForeignKey(TgUser, on_delete=models.CASCADE, verbose_name='Пользователь')
-    course = models.ForeignKey(Course, on_delete=models.CASCADE, verbose_name='Курс')
     question = models.ForeignKey(Question, on_delete=models.CASCADE, verbose_name='Вопрос')
     text = models.CharField(blank=False, null=False, max_length=256, verbose_name='Ответ')
-    is_relevant = models.IntegerField(blank=True, null=True, verbose_name='is_relevant')
-    object = models.IntegerField(blank=True, null=True, verbose_name='object')
-    is_positive = models.IntegerField(blank=True, null=True, verbose_name='is_positive')
 
     class Meta():
         verbose_name_plural = 'Ответы'
@@ -49,3 +43,20 @@ class Answer(models.Model):
 
     def __str__(self) -> str:
         return self.text[:50] + '...'
+    
+class Data(models.Model):
+    user = models.ForeignKey(TgUser, on_delete=models.CASCADE, verbose_name='Пользователь')
+    course = models.ForeignKey(Course, on_delete=models.CASCADE, verbose_name='Курс')
+    answers = models.ManyToManyField(Answer, verbose_name='Ответы')
+    is_relevant = models.IntegerField(blank=True, null=True, verbose_name='is_relevant')
+    object = models.IntegerField(blank=True, null=True, verbose_name='object')
+    is_positive = models.IntegerField(blank=True, null=True, verbose_name='is_positive')
+
+    class Meta():
+        verbose_name_plural = 'Наборы для нейросети'
+        verbose_name = 'Набор для нейросети'
+
+    def __str__(self) -> str:
+        return f"{self.user} - {self.course}"
+    
+        

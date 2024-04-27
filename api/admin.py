@@ -17,3 +17,7 @@ class QuestionAdmin(admin.ModelAdmin):
 @admin.register(Answer)
 class AnswerAdmin(admin.ModelAdmin):
     pass
+
+@admin.register(Data)
+class DataAdmin(admin.ModelAdmin):
+    pass

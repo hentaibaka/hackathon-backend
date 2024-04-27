@@ -1,5 +1,7 @@
 from dataclasses import fields
 from rest_framework import serializers
+
+from .utils import nn
 from .models import *
 
 class TgUserSerializer(serializers.ModelSerializer):
@@ -17,12 +19,31 @@ class QuestionSerializer(serializers.ModelSerializer):
         model = Question
         fields = ('id', 'text')
 
-class AnswerSerializer(serializers.ModelSerializer):
-    user = TgUserSerializer(read_only=True, many=False)
-    course = CourseSerializer(read_only=True, many=False)
-    question = QuestionSerializer(read_only=True, many=False)
-
+class CreateAnswerSerializer(serializers.ModelSerializer):
     class Meta:
         model = Answer
-        fields = ('id', 'user', 'course', 'question', 'text', 'is_relevant', 'object', 'is_positive')
+        fields = ('id', 'question', 'text')
 
+class AnswerSerializer(CreateAnswerSerializer):
+    class Meta(CreateAnswerSerializer.Meta):
+        depth = 2
+
+class CreateDataSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Data
+        fields = ('id', 'user', 'course', 'answers', 'is_relevant', 'object', 'is_positive')
+
+    def create(self, validated_data):
+        answers = validated_data.pop('answers')
+        data = Data.objects.create(**validated_data)
+        (data.is_relevant, 
+         data.object, 
+         data.is_positive) = nn(map(lambda x: (x.question.text, x.text), 
+                                    answers))
+        data.answers.add(*answers)
+        data.save()
+        return data
+
+class DataSerializer(CreateDataSerializer):
+    class Meta(CreateDataSerializer.Meta):
+        depth = 2

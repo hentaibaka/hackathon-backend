@@ -4,6 +4,8 @@ from .views import *
 
 urlpatterns = [
     path('questions/', QuestionsView.as_view()),
+    path('data/', DataView.as_view()),
     path('answers/', AnswersView.as_view()),
     path('courses/', CoursesView.as_view()),
+    path('users/', TgUsersView.as_view()),
 ]
