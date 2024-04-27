@@ -7,6 +7,10 @@ __pycache__/
 *.so
 
 # Distribution / packaging
+static/*
+media/*
+!media/images/*
+!**/.gitkeep
 .Python
 build/
 develop-eggs/
